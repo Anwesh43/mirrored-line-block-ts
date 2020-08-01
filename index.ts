@@ -193,3 +193,25 @@ class MirrorLineBlock {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    animator : Animator = new Animator()
+    mlb : MirrorLineBlock = new MirrorLineBlock()
+
+    render(context : CanvasRenderingContext2D) {
+        this.mlb.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.mlb.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.mlb.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
