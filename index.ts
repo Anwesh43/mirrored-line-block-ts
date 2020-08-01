@@ -1,3 +1,5 @@
+import { timeStamp } from "console"
+
 const w : number = window.innerWidth 
 const h : number = window.innerHeight 
 const parts : number = 2 
@@ -166,5 +168,28 @@ class MLBNode {
         }
         cb()
         return this 
+    }
+}
+
+class MirrorLineBlock {
+
+    curr : MLBNode = new MLBNode(0)
+    dir : number = 1
+
+    draw(context : CanvasRenderingContext2D) {
+        this.curr.draw(context)
+    }
+
+    update(cb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            cb()
+        })
+    }
+
+    startUpdating(cb : Function) {
+        this.curr.startUpdating(cb)
     }
 }
