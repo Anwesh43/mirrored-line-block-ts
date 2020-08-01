@@ -23,6 +23,35 @@ class ScaleUtil {
     } 
 }
 
+class DrawingUtil {
+    
+    static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
+
+    static drawMirrorLineBlock(context : CanvasRenderingContext2D, i : number, scale : number) {
+        const size : number = Math.min(w, h) / sizeFactor 
+        const sf : number = ScaleUtil.sinify(scale)
+        const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
+        const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
+        DrawingUtil.drawLine(context, 0, 0, size * sf1, 0)
+        context.fillRect(0, 0, size, h * 0.5 * sf2)
+    }
+
+    static drawMLBNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        context.strokeStyle = colors[i]
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor 
+        context.save()
+        context.translate(w / 2, h / 2)
+        DrawingUtil.drawMirrorLineBlock(context, i, scale)
+        context.restore()
+    }
+}
+
 class Stage {
 
     canvas : HTMLCanvasElement = document.createElement('canvas')
