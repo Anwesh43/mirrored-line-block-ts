@@ -1,5 +1,3 @@
-import { timeStamp } from "console"
-
 const w : number = window.innerWidth 
 const h : number = window.innerHeight 
 const parts : number = 2 
@@ -34,22 +32,40 @@ class DrawingUtil {
         context.stroke()
     }
 
-    static drawMirrorLineBlock(context : CanvasRenderingContext2D, i : number, scale : number) {
+    static drawPath(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y1)
+        context.lineTo(x2, y2)
+        context.lineTo(x1, y2)
+        context.lineTo(x1, y1)
+        context.stroke()
+        context.fill()
+    }
+
+    static drawMirrorLineBlock(context : CanvasRenderingContext2D, scale : number) {
         const size : number = Math.min(w, h) / sizeFactor 
         const sf : number = ScaleUtil.sinify(scale)
         const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
         const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
-        DrawingUtil.drawLine(context, 0, 0, size * sf1, 0)
-        context.fillRect(0, 0, size, h * 0.5 * sf2)
+        // DrawingUtil.drawLine(context, 0, 0, size * sf1, 0)
+        // context.fillRect(0, 0, size, (h / 2) * sf2)
+        DrawingUtil.drawPath(context, 0, 0, size * sf1, h * 0.5 * sf2)
     }
 
     static drawMLBNode(context : CanvasRenderingContext2D, i : number, scale : number) {
         context.strokeStyle = colors[i]
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h) / strokeFactor 
+        context.fillStyle = colors[i]
         context.save()
         context.translate(w / 2, h / 2)
-        DrawingUtil.drawMirrorLineBlock(context, i, scale)
+        for (var j = 0; j < 2; j++) {
+            context.save()
+            context.scale(1 - 2 * j, 1 - 2 * j)
+            DrawingUtil.drawMirrorLineBlock(context, scale)
+            context.restore()
+        }
         context.restore()
     }
 }
